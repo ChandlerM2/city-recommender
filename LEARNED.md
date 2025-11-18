@@ -1,4 +1,10 @@
-# CENSUS REST API REQUEST
+# Learning Documentation
+
+## Purpose
+This file documents concepts learned, architectural decisions, and problems encountered while building this project. It serves as both a learning journal and interview preparation resource.
+
+
+## CENSUS REST API REQUEST
 - they **aggregate based on geographic boundaries/areas** defined by a FIPS code
   - FIPS code designed by the **NIST** to ID states, counties, cities, and other geo areas
   - [TIGERweb](https://www.census.gov/data/developers/data-sets/TIGERweb-map-service.html) -> geolocation service -> FIPS code
@@ -33,7 +39,7 @@ response.status_code dictionary
 | code | Reason |
 |-----|---------|
 | 200 | Success |
-| 400 | Auth was successful but query is invalid |
+| 400 | Bad Request (invalid parameters or malformed query)  |
 | 401 | Auth Failed |
 | 404 | URL Not Found |
 | 500 | Server error|
@@ -41,7 +47,28 @@ response.status_code dictionary
 
 
 
-***ACS5***: every geography in the US and based on 5 years of aggregated surveys. this is best for populations of less than 65k  
+***ACS5***: 5-year aggregated surveys covering ALL geographies. More reliable due to larger sample size. Standard for most analysis.
 
 ***ACS1***: published for geo's greater than 65k and is best for big cities, YoY trend analysis, and getting the **most up to date population numbers**
 
+## Project: Census Extraction Function
+
+### What We Built
+[Describe the test_census_connection() function and what it does]
+
+### Architecture Decision: ACS1 2024
+**Why we chose this:**
+[Your reasoning for ACS1 over ACS5]
+
+**Tradeoffs:**
+[What we gain vs what we lose with this choice]
+
+### Key Concepts Applied
+**Environment Variables (.env):**
+[Explain what they are and why we use them for API keys]
+
+**Error Handling Pattern:**
+[Explain the status code check before .json() pattern]
+
+### Gotchas & Edge Cases
+[Anything that tripped you up or surprised you]
