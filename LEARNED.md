@@ -54,21 +54,28 @@ response.status_code dictionary
 ## Project: Census Extraction Function
 
 ### What We Built
-[Describe the test_census_connection() function and what it does]
+A test function that authenticates with the Census API and extracts population data for all Tennessee places from ACS1 2024. Returns parsed JSON or error dictionary.
 
 ### Architecture Decision: ACS1 2024
 **Why we chose this:**
-[Your reasoning for ACS1 over ACS5]
+I chose ACS1 over ACS5 because I wanted the most recent survey data. I know the project will only use cities over 100k meaning that ACS1 should work fine.
 
 **Tradeoffs:**
-[What we gain vs what we lose with this choice]
+Gains:
+- More recent data
+- quicker pull times as there are fewer cities
+
+Losses:  
+- granularity of data
+- Less reliable than 5-year estimates for small population changes
+- Won't capture cities below 65K population
 
 ### Key Concepts Applied
 **Environment Variables (.env):**
-[Explain what they are and why we use them for API keys]
+these are set in a .env file and help to pull passwords or secret keys into the workspace without hardcoding them.
 
 **Error Handling Pattern:**
-[Explain the status code check before .json() pattern]
+The status code check ensures the request succeeded (200) before attempting to parse JSON. If the request failed (404, 500, etc.), the response might be HTML or plain text, which would crash the .json() method.
 
 ### Gotchas & Edge Cases
-[Anything that tripped you up or surprised you]
+ - When entering the inputs for the params spaces cannot be between two objects. For instance `"NAME,B01003_001E"` is okay but `"NAME, B01003_001E"` is not.  

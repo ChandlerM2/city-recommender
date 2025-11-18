@@ -1,10 +1,10 @@
 # City Recommender Pipeline
 
 ## Purpose
-[What business problem this solves - 2 sentences]
+An interactive city recommendation system that analyzes US cities (100K+ population) across multiple factors (affordability, safety, income, quality of life) and recommends the best matches based on user-weighted preferences.
 
 ## Architecture
-[High-level: APIs → BigQuery → dbt → Dashboard]
+APIs → BigQuery → dbt → Looker Studio Dashboard
 
 ## Setup Instructions
 1. Clone repo
@@ -14,13 +14,12 @@
 5. Run extraction
 
 ## Usage
-[How to run the code]
+
+Not set up quite yet
 
 ## Data Sources
 - Census ACS1 2024
 - FBI Crime Data
 - FCC Broadband
-- [etc]
-
 ## Output
-[What it produces and where]
+Produces a dashboard in Looker Studio.
