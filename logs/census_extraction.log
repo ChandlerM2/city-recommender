@@ -1,0 +1,6 @@
+2025-11-20 02:49:57.374 - INFO - Starting extraction of city populations from Census API.
+2025-11-20 02:51:00.129 - INFO - Starting extraction of city populations from Census API.
+2025-11-20 02:53:03.618 - INFO - Starting extraction of city populations from Census API.
+2025-11-20 02:53:37.548 - ERROR - State 50 \u2192 HTTP 204: 
+2025-11-20 02:53:39.675 - ERROR - State 54 \u2192 HTTP 204: 
+2025-11-20 02:53:41.106 - INFO - Completed extraction - found 357 cities above population 100000
