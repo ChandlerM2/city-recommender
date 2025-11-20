@@ -23,6 +23,7 @@ response = requests.get(url, params=params) # here the parameters are given abov
 data = response.json()
 ```
 
+the return in our case is in a `["NAME", "B01003_001E", "state", "place"]`
 The census data will be get, for, and key
 
 
@@ -79,3 +80,25 @@ The status code check ensures the request succeeded (200) before attempting to p
 
 ### Gotchas & Edge Cases
  - When entering the inputs for the params spaces cannot be between two objects. For instance `"NAME,B01003_001E"` is okay but `"NAME, B01003_001E"` is not.  
+
+
+## Logging for Production
+
+We use print statements in testing but once we start to think about dev environments we need to use the logging module. 
+
+`DEBUG` - Detailed diagnostic information
+`INFO` - Makes sure that things are working as planned
+`WARNING` - Something unexpected happened, but the code still executed
+`ERROR` - a real error happened that could cause a degraded feel of code quality
+`CRITICAL` - enough of an issue to possibly crash a program
+
+**At the top of your file make sure you configure how you want the logs to look**
+```python 
+logging.basicConfig(
+    filename = "census-logging.log"
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+    filemode = 'a'
+)
+
+MIN_POPULATION = 100000
