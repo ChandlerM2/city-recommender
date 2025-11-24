@@ -15,9 +15,6 @@ __pycache__/
 *.pyd
 .Python
 
-# Logs
-logs/
-
 # IDE
 .vscode/
 .idea/
@@ -25,3 +22,9 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+
+#Logs 
+logs/*
+ 
+#Keep the logs directory
+!logs/.gitkeep
