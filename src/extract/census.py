@@ -48,18 +48,24 @@ def test_census_connection(): # this is a test fucntion to see if the api works 
 
 
 def extract_all_cities_populations():
+    # Load API key from environment variables
     load_dotenv()
     api_key = os.getenv("CENSUS_API_KEY")
     if not api_key:
         logging.critical("CENSUS_API_KEY not found in environment variables.")
         raise ValueError("CENSUS_API_KEY not found in environment variables.")
-        
-    cities_above_100k = []
 
+    # List to hold cities with population above threshold    
+    
+    cities_above_100k = []
+    
+    # Start city extraction process
     logging.info("Starting extraction of city populations from Census API.")
+    
     for fips_code in STATE_FIPS_CODES:
         clean_fip = str(fips_code).zfill(2)
-        #this pulls the Cities
+        
+        #this pulls the Cities name and population from the census api for each state
         params = {
             "get": "NAME,B01003_001E",
             "for": "place:*",
@@ -68,16 +74,18 @@ def extract_all_cities_populations():
         }
         response = requests.get(CENSUS_URL, params=params)
 
-        print("success")
-        if response.status_code == 200:
-            cities = response.json()
-            for city in cities[1:]: 
-                if int(city[1])  > MIN_POPULATION:
-                    cities_above_100k.append(city)
-        else:
-            logging.error(f"State {fips_code} → HTTP {response.status_code}: {response.text}")
-    
-    
+        if response.ok:
+            if response.status_code == 204:
+                logging.warning(f"State {clean_fip}, HTTP 204: No cities found in this state.")
+            else:
+                cities = response.json()
+                for city in cities[1:]: 
+                    if int(city[1])  > MIN_POPULATION:
+                        cities_above_100k.append(city)
+        elif 400 <= response.status_code < 500:
+            logging.error(f"client side error for State {clean_fip}: HTTP {response.status_code} - {response.text}")
+        else: 
+            logging.error(f"server error for State {clean_fip}: HTTP {response.status_code} - {response.text}")
     logging.info(f"Completed extraction - found {len(cities_above_100k)} cities above population {MIN_POPULATION}")
     
     return cities_above_100k
