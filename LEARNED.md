@@ -40,10 +40,13 @@ response.status_code dictionary
 | code | Reason |
 |-----|---------|
 | 200 | Success |
+| 201 | Created |
+| 204 | Okay, but no content received back |
 | 400 | Bad Request (invalid parameters or malformed query)  |
 | 401 | Auth Failed |
 | 404 | URL Not Found |
 | 500 | Server error|
+| 503 | service unavailable |
 --------------------
 
 
@@ -100,5 +103,125 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
     filemode = 'a'
 )
+```
 
-MIN_POPULATION = 100000
+## Google BigQuery
+
+### **Differences from Traditional Databases:**
+  
+  - lives on Googles Cloud instead of an on prem physical server
+  - google handles storage, backups, and scaling
+  - analytical style queryes (scans millions of rows) - columnar format (instead of row based)
+  - only pay for data stored and queries run
+
+### **Storage Format**
+  
+  1. project level (the name of the project/ warehouse)
+  2. dataset (database or schema) 
+  3. table (where your actual data lives)
+
+### **table types**
+
+**Native Table:** the data is fully managed and backed up. It lives in GBQ storage and is queryable instantly. This is where you would load from the beginning
+
+**External Table:** the data lives in Google Cloud or Google Sheets, BigQuery is used to query the data. This is generally slower due to little - no caching. We would use this is data changes constantly outside of bigquery. usally this is data that lives somewhere else **already**
+
+**Materialized View:** a pre-computed query result stored as a table that refreshed automatically when source data changes, Faster queryies and cost storage. It's like a view table but just better
+
+### **Partitioning and Clustering**
+These optimize query performance for large datasets
+
+***Partitioning:***
+
+- Splits table into segments by a column (usually date)
+- if you had a query like "Get data for 2024" only scans 2024 partition
+- Reduces data scanned = faster + cheaper
+
+***Clustering:***
+
+- Sorts data by specified columns
+- Queries filtering/sorting by those columns are faster
+
+
+### Security: Using a Service Account 
+
+
+1. Creates  a "robot account" (not a real user)
+2. Download a JSON key file with credentials
+3. Code uses that key file to authenticate
+4. Service account only has BigQuery permissions (nothing else)
+
+**Pros:**
+
+- Works anywhere (local, server, scheduled jobs)
+- Can be shared with team (not your personal account)
+- Principle of least privilege (only BigQuery access)
+- Production-ready pattern
+
+**Cons:**
+
+- Requires initial setup
+- JSON key file is sensitive and needs proper storage
+
+Therefore you set this in .env and never commit to any services
+
+### Permissions Model
+
+**Roles you can assign:**
+- **BigQuery Admin:** Full control (create datasets, tables, delete everything)
+- **BigQuery Data Editor:** Read/write data, create tables (can't delete datasets)
+- **BigQuery Job User:** Run queries only
+- **BigQuery Data Viewer:** Read-only
+
+
+
+
+## Creating Your Service Account
+
+### **Step 1: Go to IAM & Admin**
+
+In Google Cloud Console:
+1. Click hamburger menu (☰) top-left
+   
+2. Find "IAM & Admin" section
+3. Click "Service Accounts"
+
+**Step 2: Create Service Account**
+
+1. Click "+ Create Service Account" at top
+2. **Service account name:** `city-pipeline` (or whatever you want)
+3. **Service account description:** "Data pipeline for city recommender project"
+4. Click "Create and Continue"
+
+**Step 3: Grant Permissions**
+
+1. Click "Select a role" dropdown
+2. Search for: "BigQuery Data Editor"
+3. Select it
+4. Click "Continue"
+5. Skip optional "Grant users access" step
+6. Click "Done"
+
+**Step 4: Create JSON Key**
+
+1. Find your new service account in the list
+2. Click the three dots (⋮) on the right
+3. Click "Manage keys"
+4. Click "Add Key" → "Create new key"
+5. Choose "JSON" format
+6. Click "Create"
+7. **A JSON file downloads to your computer**
+
+**Step 5: Store the Key Securely**
+
+Move that downloaded JSON file:
+```
+city-recommender/
+├── credentials/
+│   └── bigquery-key.json  ← Put it here
+```
+
+Add `credentials/` to your `.gitignore`:
+```
+# In .gitignore
+credentials/
