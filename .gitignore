@@ -1,9 +1,11 @@
-# Virtual Environments
+# Credentials
+credentials/
 
+# Environment
 venv/
 .env
 
-#Data
+# Data
 data/
 
 # Python
@@ -13,7 +15,10 @@ __pycache__/
 *.pyd
 .Python
 
-# IDEs
+# Logs
+logs/
+
+# IDE
 .vscode/
 .idea/
 
